@@ -1,15 +1,12 @@
 use bevy::prelude::*;
-use bevy::diagnostic::{DiagnosticsStore, FrameTimeDiagnosticsPlugin};
 use std::io::Write;
 use sysinfo::ProcessesToUpdate;
 
-use crate::game::resources::perf_monitor::PerfMonitor;
+use crate::game::resources::perf_monitor::{PerfMonitor, tick_stats::TickStats};
 
-pub fn print_metrics(
-    mut perf: ResMut<PerfMonitor>,
-    time: Res<Time>,
-    diagnostics: Res<DiagnosticsStore>,
-) {
+pub fn print_metrics(mut perf: ResMut<PerfMonitor>, time: Res<Time>, real_time: Res<Time<Real>>) {
+    perf.count_frame(real_time.elapsed_secs_f64());
+
     if time.elapsed_secs() - perf.last_print() > 0.25 {
         // CPU/RAM (процесс)
         perf.system_mut()
@@ -51,26 +48,26 @@ pub fn print_metrics(
             }
         }
 
-        // FPS (сглаженное)
-        let mut fps_out: f32 = 0.0;
-        if let Some(fps) = diagnostics.get(&FrameTimeDiagnosticsPlugin::FPS) {
-            if let Some(avg) = fps.smoothed() {
-                fps_out = avg as f32;
-                println!("FPS: {:.1}", avg);
-            }
-        }
+        // FPS
+        let fps_out = perf.fps();
+        println!("FPS: {}", fps_out);
+        let ticks = TickStats::take_tick_stats(&mut perf);
 
         // Пишем строку в CSV: second, cpu%, ram MiB, gpu% sum, gpu_mem MiB sum, fps
         if let Some(file) = perf.csv_mut() {
             let _ = writeln!(
                 file,
-                "{},{:.2},{:.2},{},{},{}",
+                "{},{:.2},{:.2},{},{},{},{:.3},{:.2},{},{:.3}",
                 time.elapsed_secs(),
                 cpu_percent,
                 ram_mib,
                 gpu_percent_sum,
                 gpu_mem_mib_sum,
-                fps_out
+                fps_out,
+                ticks.physics_ms(),
+                ticks.steps_per_frame(),
+                ticks.core(),
+                ticks.workload_ms()
             );
         }
 

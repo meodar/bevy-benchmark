@@ -23,7 +23,7 @@ pub fn setup_perf_monitor(mut commands: Commands, time: Res<Time>) {
     if let Some(f) = file.as_mut() {
         let _ = writeln!(
             f,
-            "second,cpu_percent,ram_mib,gpu_percent,gpu_mem,fps"
+            "second,cpu_percent,ram_mib,gpu_percent,gpu_mem,fps,physics_ms,physics_steps_per_frame,core,workload_ms"
         );
     }
     commands.insert_resource(PerfMonitor::new(sys, pid, time.elapsed_secs(), nvml, file));

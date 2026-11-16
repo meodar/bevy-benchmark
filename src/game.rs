@@ -10,9 +10,9 @@ use systems::{
 
 use crate::{
     game::systems::{
-        benchmark_heavy_tick, benchmark_spawn, despawn_bullets_out_of_bounds,
-        despawn_enemies_out_of_bounds, despawn_enemy_bullets_out_of_bounds, enemy_benchmark,
-        print_metrics, setup_perf_monitor, timer_benchmark_spawn,
+        begin_physics_tick, benchmark_heavy_tick, benchmark_spawn, despawn_bullets_out_of_bounds,
+        despawn_enemies_out_of_bounds, despawn_enemy_bullets_out_of_bounds, end_physics_tick,
+        enemy_benchmark, print_metrics, setup_perf_monitor, timer_benchmark_spawn,
     },
     game_state::GameState,
 };
@@ -82,5 +82,7 @@ pub fn game_plugin(app: &mut App) {
             despawn_enemy_bullets_out_of_bounds,
         )
             .run_if(in_state(GameState::Game)),
-    );
+    )
+    .add_systems(FixedFirst, begin_physics_tick)
+    .add_systems(FixedLast, end_physics_tick);
 }

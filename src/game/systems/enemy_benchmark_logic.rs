@@ -1,11 +1,15 @@
 use bevy::prelude::*;
 
 use crate::{
-    game::components::enemy::{Enemy, enemy_state::WorkloadCursor},
+    game::{
+        components::enemy::{Enemy, enemy_state::WorkloadCursor},
+        resources::perf_monitor::tick_stats,
+    },
     random_table,
 };
 
 pub fn enemy_benchmark(mut enemy_query: Query<&mut WorkloadCursor, With<Enemy>>) {
+    let started = std::time::Instant::now();
     let table = random_table::table();
     enemy_query.iter_mut().for_each(|mut workload_cursor| {
         let mut cursor = workload_cursor.0;
@@ -21,4 +25,5 @@ pub fn enemy_benchmark(mut enemy_query: Query<&mut WorkloadCursor, With<Enemy>>)
             println!("weird");
         }
     });
+    tick_stats::record_workload(started.elapsed());
 }

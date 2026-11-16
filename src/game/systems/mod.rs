@@ -12,6 +12,8 @@ mod enemy_hit_checking;
 mod enemy_shooting;
 mod enemy_spawning;
 
+mod begin_physics_tick;
+mod end_physics_tick;
 mod player_health_checker;
 mod player_hit_checking;
 mod player_movement;
@@ -24,12 +26,14 @@ mod skybox_processor;
 mod terrain_movement;
 mod top_enemy_moving;
 
+pub use begin_physics_tick::begin_physics_tick;
 pub use benchmark_heavy_tick::benchmark_heavy_tick;
 pub use benchmark_spawn::benchmark_spawn;
 pub use benchmark_spawn_by_timer::timer_benchmark_spawn;
 pub use bullet_movement::move_bullet;
 pub use bullets_despawn::despawn_bullets_out_of_bounds;
 pub use camera_changing::change_camera;
+pub use end_physics_tick::end_physics_tick;
 pub use enemy_benchmark_logic::enemy_benchmark;
 pub use enemy_bullet_movement::move_enemy_bullet;
 pub use enemy_bullets_despawn::despawn_enemy_bullets_out_of_bounds;
