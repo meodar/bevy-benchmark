@@ -14,7 +14,7 @@ use crate::{
     },
     random_table,
 };
-use bevy::prelude::*;
+use bevy::{camera::ScalingMode, prelude::*};
 use bevy::{camera::visibility::RenderLayers, light::Skybox};
 use std::f32::consts::PI;
 
@@ -51,7 +51,10 @@ pub fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>) {
         Camera3d::default(),
         Projection::Orthographic(OrthographicProjection {
             near: 0.0,
-            far: 30000.0,
+            far: 40000.0,
+            scaling_mode: ScalingMode::FixedVertical {
+                viewport_height: 1400.0,
+            },
             ..OrthographicProjection::default_3d()
         }),
         camera_tf.clone(),

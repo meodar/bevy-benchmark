@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use bevy::prelude::*;
+use bevy::window::WindowResolution;
 use bevy::{diagnostic::FrameTimeDiagnosticsPlugin, window::PresentMode};
 use game::game_plugin;
 use game_state::GameState;
@@ -20,6 +21,7 @@ fn main() {
     let default_plugin = DefaultPlugins.set(WindowPlugin {
         primary_window: Some(Window {
             present_mode: PresentMode::Fifo,
+            resolution: WindowResolution::new(1152, 648),
             ..default()
         }),
         ..default()
